@@ -1,0 +1,30 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+.App {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+.App1 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 80vh;
+}
+.text-color {
+  color: #41CD7D;
+}
+.options span {
+  color: #9499cf;
+}
+.options a {
+  color: #41CD7D;
+}
+.form {
+  width: 500px;
+  min-width: 300px;
+}
