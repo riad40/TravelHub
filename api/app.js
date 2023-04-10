@@ -20,9 +20,17 @@ app.use(cors({ origin: true, credentials: true }))
 
 const authRouter = require("./routes/auth")
 const destinationRouter = require("./routes/destination")
+const reviewRouter = require("./routes/review")
+const destinationDetailsRouter = require("./routes/destinationDetails")
+const programRouter = require("./routes/program")
+const bookingRouter = require("./routes/booking")
 
 app.use("/api/auth", authRouter)
 app.use("/api/destinations", destinationRouter)
+app.use("/api/reviews", reviewRouter)
+app.use("/api/destinationDetails", destinationDetailsRouter)
+app.use("/api/programs", programRouter)
+app.use("/api/bookings", bookingRouter)
 
 app.listen(process.env.PORT || 5000, () => {
     console.log(`Server started on port ${process.env.PORT}`)

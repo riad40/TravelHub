@@ -27,6 +27,15 @@ const validate = (method) => {
                 check("user", "user is required").not().isEmpty(),
             ]
         }
+        case "createBooking": {
+            return [
+                check("destination", "destination is required").not().isEmpty(),
+                check("user", "user is required").not().isEmpty(),
+            ]
+        }
+        case "updateBookingStatus": {
+            return [check("status", "status is required").not().isEmpty()]
+        }
     }
 }
 
