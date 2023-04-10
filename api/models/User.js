@@ -1,39 +1,28 @@
-const mongoose = require('mongoose')
-// const roles = require('./UsersRole')
+const mongoose = require("mongoose")
 
 const userSchema = new mongoose.Schema({
-
     username: {
         type: String,
         required: true,
         max: 255,
-        min: 4
+        min: 4,
     },
     email: {
         type: String,
         required: true,
-        max: 255    
+        max: 255,
     },
     password: {
         type: String,
         required: true,
-        max: 1024    
-    },  
-    register_date: {
-        type: Date,
-        default: Date.now
+        max: 1024,
     },
-    emailIsValid: {
-        type: Boolean,
-        default: false
-    },
-    resetTokenValid: {
-        type: String
-    },
-    role: [{
-        type: mongoose.Types.ObjectId,
-        ref: 'roles'
-    }]
+    role: [
+        {
+            type: mongoose.Types.ObjectId,
+            ref: "Role",
+        },
+    ],
 })
 
-module.exports = mongoose.model('User', userSchema)
+module.exports = mongoose.model("User", userSchema)

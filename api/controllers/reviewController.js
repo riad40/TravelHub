@@ -32,6 +32,10 @@ const createReview = async (req, res) => {
 const getReviewsByDestination = async (req, res) => {
     try {
         const reviews = await Review.find({ destination: req.params.id })
+            .sort({
+                date: -1,
+            })
+            .populate("user", ["username"])
 
         res.json(reviews)
     } catch (err) {
@@ -44,6 +48,10 @@ const getReviewsByDestination = async (req, res) => {
 const getReviewsByUser = async (req, res) => {
     try {
         const reviews = await Review.find({ user: req.params.id })
+            .sort({
+                date: -1,
+            })
+            .populate("destination", ["name"])
 
         res.json(reviews)
     } catch (err) {

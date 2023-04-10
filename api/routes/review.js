@@ -6,7 +6,10 @@ const {
     getReviewsByUser,
 } = require("../controllers/reviewController")
 
-router.route("/").post(createReview)
+const authChecker = require("../middlewares/authChecker")
+const validate = require("../middlewares/bodyValidator")
+
+router.route("/").post(authChecker, validate("createReview"), createReview)
 
 router.route("/:id").get(getReviewsByDestination)
 

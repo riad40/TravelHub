@@ -1,35 +1,36 @@
 {
-  "name": "authentication-using-jwt",
-  "version": "1.0.0",
-  "description": "",
-  "main": "app.js",
-  "scripts": {
-    "test": "jest --forceExit"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/riad40/authentication-using-jwt.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/riad40/authentication-using-jwt/issues"
-  },
-  "homepage": "https://github.com/riad40/authentication-using-jwt#readme",
-  "dependencies": {
-    "bcryptjs": "^2.4.3",
-    "cookie-parser": "^1.4.6",
-    "cors": "^2.8.5",
-    "dotenv": "^16.0.3",
-    "express": "^4.18.2",
-    "jsonwebtoken": "^8.5.1",
-    "mongoose": "^6.6.5",
-    "morgan": "^1.10.0",
-    "nodemailer": "^6.8.0"
-  },
-  "devDependencies": {
-    "jest": "^29.3.1",
-    "supertest": "^6.3.1"
-  }
+    "name": "travelhub",
+    "version": "1.0.0",
+    "description": "",
+    "main": "app.js",
+    "scripts": {
+        "test": "jest --forceExit",
+        "start": "nodemon app.js"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/riad40/TravelHub.git"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/riad40/TravelHub/issues"
+    },
+    "homepage": "https://github.com/riad40/TravelHub#readme",
+    "dependencies": {
+        "bcryptjs": "^2.4.3",
+        "cors": "^2.8.5",
+        "dotenv": "^16.0.3",
+        "express": "^4.18.2",
+        "express-validator": "^6.15.0",
+        "jsonwebtoken": "^9.0.0",
+        "mongoose": "^7.0.3",
+        "multer": "^1.4.5-lts.1",
+        "nodemon": "^2.0.22"
+    },
+    "devDependencies": {
+        "jest": "^29.3.1",
+        "supertest": "^6.3.1"
+    }
 }

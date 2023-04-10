@@ -1,21 +1,13 @@
 const DestinationDetails = require("../models/DestinationDetails")
-const { validationResult } = require("express-validator")
 
 // create a destination details
-const createDestinationDetails = async (req, res, next) => {
-    // check for validation errors
-    const errors = validationResult(req)
-    if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() })
-    }
-
+const createDestinationDetails = async (req, res) => {
     // destructure the request body
     const {
         start_date,
         end_date,
         destination,
         program,
-        images,
         starting_point,
         inclusions,
         exclusions,
@@ -28,7 +20,10 @@ const createDestinationDetails = async (req, res, next) => {
             end_date,
             destination,
             program,
-            images,
+            images: req.files.map((file) => ({
+                data: file.buffer,
+                contentType: file.mimetype,
+            })),
             starting_point,
             inclusions,
             exclusions,
@@ -46,7 +41,7 @@ const createDestinationDetails = async (req, res, next) => {
 }
 
 // get all destination details
-const getAllDestinationDetails = async (req, res, next) => {
+const getAllDestinationDetails = async (req, res) => {
     try {
         // find all destination details
         const destinationDetails = await DestinationDetails.find()
@@ -60,7 +55,7 @@ const getAllDestinationDetails = async (req, res, next) => {
 }
 
 // get a destination details
-const getDestinationDetails = async (req, res, next) => {
+const getDestinationDetails = async (req, res) => {
     try {
         // find the destination details by id
         const destinationDetails = await DestinationDetails.findById(
@@ -83,35 +78,17 @@ const getDestinationDetails = async (req, res, next) => {
 }
 
 // update a destination details
-const updateDestinationDetails = async (req, res, next) => {
-    // check for validation errors
-    const errors = validationResult(req)
-    if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() })
-    }
-
+const updateDestinationDetails = async (req, res) => {
     // destructure the request body
     const {
         start_date,
         end_date,
         destination,
         program,
-        images,
         starting_point,
         inclusions,
         exclusions,
     } = req.body
-
-    // build a destination details object
-    const destinationDetailsFields = {}
-    if (start_date) destinationDetailsFields.start_date = start_date
-    if (end_date) destinationDetailsFields.end_date = end_date
-    if (destination) destinationDetailsFields.destination = destination
-    if (program) destinationDetailsFields.program = program
-    if (images) destinationDetailsFields.images = images
-    if (starting_point) destinationDetailsFields.starting_point = starting_point
-    if (inclusions) destinationDetailsFields.inclusions = inclusions
-    if (exclusions) destinationDetailsFields.exclusions = exclusions
 
     try {
         // find the destination details by id
@@ -127,9 +104,25 @@ const updateDestinationDetails = async (req, res, next) => {
         }
 
         // update the destination details
-        destinationDetails = await DestinationDetails.findByIdAndUpdate(
-            req.params.id,
-            { $set: destinationDetailsFields },
+        destinationDetails = await DestinationDetails.updateOne(
+            {
+                _id: req.params.id,
+            },
+            {
+                $set: {
+                    start_date,
+                    end_date,
+                    destination,
+                    program,
+                    images: req.files.map((file) => ({
+                        data: file.buffer,
+                        contentType: file.mimetype,
+                    })),
+                    starting_point,
+                    inclusions,
+                    exclusions,
+                },
+            },
             { new: true }
         )
 
@@ -142,7 +135,7 @@ const updateDestinationDetails = async (req, res, next) => {
 }
 
 // delete a destination details
-const deleteDestinationDetails = async (req, res, next) => {
+const deleteDestinationDetails = async (req, res) => {
     try {
         // find the destination details by id
         let destinationDetails = await DestinationDetails.findById(

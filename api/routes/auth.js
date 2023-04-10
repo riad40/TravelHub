@@ -1,13 +1,8 @@
-const express = require('express')
-const router = express.Router()
-const { login, register, forgetPassword, resetPassword, verifyEmail, logout, getRoles } = require('../controllers/authController')
+const router = require("express").Router()
+const { login, register } = require("../controllers/authController")
+const validate = require("../middlewares/bodyValidator")
 
-router.post('/login', login)
-router.post('/register', register)
-router.get('/register/verify/:token', verifyEmail)
-router.post('/forgetpassword', forgetPassword)
-router.post('/resetpassword/:token', resetPassword)
-router.get('/logout', logout)
-router.get('/roles', getRoles)
+router.route("/register").post(validate("register"), register)
+router.route("/login").post(validate("login"), login)
 
 module.exports = router

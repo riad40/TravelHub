@@ -8,19 +8,39 @@ const {
     deleteDestinationDetails,
 } = require("../controllers/destinationDetailsController")
 
+const authChecker = require("../middlewares/authChecker")
+const roleChecker = require("../middlewares/roleChecker")
+const upload = require("../middlewares/uploadImage")
+
 // create a destination details
-router.post("/", createDestinationDetails)
+router
+    .route("/")
+    .post(
+        authChecker,
+        roleChecker("travel_agent"),
+        upload.array("images", 5),
+        createDestinationDetails
+    )
 
 // get all destination details
-router.get("/", getAllDestinationDetails)
+router.route("/").get(getAllDestinationDetails)
 
 // get a destination details
-router.get("/:id", getDestinationDetails)
+router.route("/:id").get(getDestinationDetails)
 
 // update a destination details
-router.put("/:id", updateDestinationDetails)
+router
+    .route("/:id")
+    .put(
+        authChecker,
+        roleChecker("travel_agent"),
+        upload.array("images", 5),
+        updateDestinationDetails
+    )
 
 // delete a destination details
-router.delete("/:id", deleteDestinationDetails)
+router
+    .route("/:id")
+    .delete(authChecker, roleChecker("travel_agent"), deleteDestinationDetails)
 
 module.exports = router

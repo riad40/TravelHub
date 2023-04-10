@@ -1,31 +1,31 @@
-require("dotenv").config();
-require("./config/init_db").setDefaultRoles();
-const db = require("./config/config_db");
-const express = require("express");
-const cors = require("cors");
-const cookieParser = require("cookie-parser");
-const errorHandler = require("./middlwares/errorHandler");
+require("dotenv").config()
+const connectDB = require("./config/connectDB")
+const initDB = require("./config/initDB")
+const express = require("express")
+const cors = require("cors")
 
-const app = express();
+const app = express()
+
+// connect to database
+connectDB()
+
+// create roles && travel agent
+initDB()
 
 // middlwares for handling or parsing incoming requests
-app.use(express.urlencoded({ extended: false }));
-app.use(express.json());
+app.use(express.urlencoded({ extended: false }))
+app.use(express.json())
 
-app.use(cors({ origin: true, credentials: true }));
-app.use(cookieParser());
+app.use(cors({ origin: true, credentials: true }))
 
-const authRouter = require("./routes/auth");
+const authRouter = require("./routes/auth")
+const destinationRouter = require("./routes/destination")
 
-app.use("/api/auth", authRouter);
+app.use("/api/auth", authRouter)
+app.use("/api/destinations", destinationRouter)
 
-// middlwares
-app.use(errorHandler);
+app.listen(process.env.PORT || 5000, () => {
+    console.log(`Server started on port ${process.env.PORT}`)
+})
 
-const port = process.env.PORT;
-
-app.listen(port, (err) => {
-    !err ? console.log("app running on port " + port) : console.log(err);
-});
-
-module.exports = app;
+module.exports = app

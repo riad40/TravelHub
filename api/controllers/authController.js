@@ -1,280 +1,116 @@
-const User = require("../models/User");
-const Role = require("../models/Role");
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
-const sendEmail = require("../helpers/senEmail");
-// method : post
-// URL: api/auth/register
-// access : public
-exports.register = async (req, res, next) => {
-    // make register
-    if (
-        req.body.username !== "" &&
-        req.body.email !== "" &&
-        req.body.password !== ""
-    ) {
-        // verify if email already taken
-        const emailTaken = await User.findOne({ email: req.body.email });
+const User = require("../models/User")
+const Role = require("../models/Role")
+const bcrypt = require("bcryptjs")
+const jwt = require("jsonwebtoken")
+const { validationResult } = require("express-validator")
+
+/**
+ * @desc    register a user
+ * @route   POST /api/auth/register
+ * @access  public
+ */
+
+const register = async (req, res) => {
+    // get the user data from the request body
+    const { username, email, password } = req.body
+
+    // check if there are validation errors
+    const errors = validationResult(req)
+
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() })
+    }
+
+    try {
+        // check if the user already exists
+        const userExist = await User.findOne({ email })
+        if (userExist) {
+            return res.status(400).json({ message: "user already exists" })
+        }
+
+        // get the user role id
+        const userRole = await Role.findOne({ role: "customer" })
+
         // hash the password
-        const hashPassword = await bcrypt.hash(
-            req.body.password,
-            await bcrypt.genSalt(10)
-        );
-        // const hashPassword = req.body.password
-        // get role id
-        let userRole = await Role.findOne({ role: req.body.role });
-        // set a default role if the user didn't set the role
-        let defaultRole = await Role.findOne({ role: "customer" });
-        if (userRole == null) {
-            userRole = {
-                _id: defaultRole._id,
-                role: defaultRole.role,
-            };
-        }
-        if (!emailTaken) {
-            const user = new User({
-                username: req.body.username,
-                email: req.body.email,
-                password: hashPassword,
-                role: userRole._id,
-            });
-            try {
-                await user.save();
-                // token for email verification
-                const token = jwt.sign(
-                    { _id: user._id },
-                    process.env.JWT_SECRET,
-                    { expiresIn: "1h" }
-                );
-                sendEmail(user.email, token, "verify", "Verify Your Email ");
-                res.status(200).send({
-                    message: "A verefication mail just sent your inbox",
-                });
-            } catch (error) {
-                next({
-                    error: true,
-                    status: 400,
-                    message: "something went wrong " + error,
-                });
-            }
-        } else {
-            next({
-                error: true,
-                status: 400,
-                message: "Email is already taken",
-            });
-        }
-    } else {
-        next({
-            error: true,
-            status: 400,
-            message: "All the fileds are required",
-        });
-    }
-};
+        const salt = await bcrypt.genSalt(10)
+        const hashedPassword = await bcrypt.hash(password, salt)
 
-// method : post
-// URL: api/auth/register/verify/:token
-// access : public
-exports.verifyEmail = async (req, res, next) => {
+        // create the user
+        const user = new User({
+            username,
+            email,
+            password: hashedPassword,
+            role: [userRole._id],
+        })
+        await user.save()
+
+        // send the response
+        res.status(201).json({ message: "user created successfully" })
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({ message: "internal server error" })
+    }
+}
+
+/**
+ * @desc    login a user
+ * @route   POST /api/auth/login
+ * @access  public
+ */
+
+const login = async (req, res) => {
+    // check if there are validation errors
+    const errors = validationResult(req)
+
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() })
+    }
+
+    // get the user data from the request body
+    const { email, password } = req.body
+
     try {
-        const token = req.params.token;
-
-        const userData = jwt.verify(token, process.env.JWT_SECRET);
-
-        User.updateOne({ _id: userData._id }, { $set: { emailIsValid: true } })
-            .then(() => {
-                next({
-                    error: false,
-                    status: 200,
-                    message: "verified",
-                });
-            })
-            .catch((err) => {
-                console.log(err) && res.send("something went wrong " + err);
-            });
-    } catch (err) {
-        next({
-            error: true,
-            status: 400,
-            message: err.message,
-        });
-    }
-};
-
-// method : post
-// URL: api/auth/login
-// access : public
-exports.login = async (req, res, next) => {
-    if (req.body.email !== "" && req.body.password !== "") {
-        const user = await User.findOne({ email: req.body.email });
-        if (!user) {
-            next({
-                error: true,
-                status: 400,
-                message: "Credintials are wrong",
-            });
+        // check if the user exists
+        const userExist = await User.findOne({ email })
+        if (!userExist) {
+            return res.status(400).json({ message: "user does not exist" })
         }
-        if (
-            user.email &&
-            (await bcrypt.compare(req.body.password, user.password))
-        ) {
-            if (user.emailIsValid) {
-                const token = jwt.sign(
-                    { _id: user._id },
-                    process.env.JWT_SECRET,
-                    { expiresIn: "24h" }
-                );
-                const role = await Role.findById({ _id: user.role[0] });
-                res.cookie("accessToken", token, { httpOnly: false }).json({
-                    message: `Hi ${user.username} u've just logged in succefully`,
-                    role: role.role,
-                    token,
-                });
-            } else {
-                next({
-                    error: true,
-                    status: 400,
-                    message:
-                        "Email is not validated, Check your inbox to validate your email",
-                });
-            }
-        } else {
-            next({
-                error: true,
-                status: 400,
-                message: "Credintials are wrong",
-            });
+
+        // get the user roles
+        const roles = await Role.find({ _id: { $in: userExist.role } })
+
+        // check if the password is correct
+        const isPasswordCorrect = await bcrypt.compare(
+            password,
+            userExist.password
+        )
+        if (!isPasswordCorrect) {
+            return res.status(400).json({ message: "invalid credentials" })
         }
-    } else {
-        next({
-            error: true,
-            status: 400,
-            message: "All the fileds are required",
-        });
-    }
-};
 
-// method : post
-// URL: api/auth/forgetpassword
-// access : public
-exports.forgetPassword = async (req, res, next) => {
-    if (req.body.email !== "") {
-        const user = await User.findOne({ email: req.body.email });
+        // create the token
+        const token = jwt.sign(
+            { id: userExist._id, roles: userExist.role },
+            process.env.JWT_SECRET
+        )
 
-        if (!user) {
-            next({
-                error: true,
-                status: 400,
-                message: "Email dosen't exist",
-            });
-        } else {
-            // generate token
-            const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
-                expiresIn: "24h",
-            });
-            // send token to db
-            try {
-                await User.updateOne(
-                    { _id: user._id },
-                    { $set: { resetTokenValid: token } }
-                );
-            } catch (error) {
-                console.log(error);
-            }
-            // send forget password email
-            sendEmail(
-                user.email,
+        // send the response && set the token in authorization header
+        res.status(200)
+            .header("authorization", `Bearer ${token}`)
+            .json({
+                message: "user logged in successfully",
                 token,
-                "resetpassword",
-                "Verify Your Email To Reset Password "
-            );
-            next({
-                error: false,
-                status: 200,
-                message: "A reset password mail has been sent to your inbox",
-            });
-        }
-    } else {
-        next({
-            error: true,
-            status: 400,
-            message: "email is required",
-        });
+                user: {
+                    id: userExist._id,
+                    username: userExist.username,
+                    email: userExist.email,
+                    roles: roles.map((role) => role.role),
+                },
+            })
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({ message: "internal server error" })
     }
-};
+}
 
-// method : post
-// URL: api/auth/resetpassword
-// access : public
-exports.resetPassword = async (req, res, next) => {
-    if (req.body.newpassword !== "") {
-        const token = req.params.token;
-
-        const userData = jwt.verify(token, process.env.JWT_SECRET);
-
-        const user = await User.findOne({ _id: userData._id });
-
-        const pwd = await bcrypt.hash(
-            req.body.newpassword,
-            await bcrypt.genSalt(10)
-        );
-
-        if (token == user.resetTokenValid) {
-            User.updateOne({ _id: userData._id }, { $set: { password: pwd } })
-                .then(() => {
-                    next({
-                        error: false,
-                        status: 200,
-                        message: "Password Changed Succefully",
-                    });
-                })
-                .catch((err) => {
-                    console.log(err) && res.send("something went wrong " + err);
-                });
-        } else {
-            next({
-                error: true,
-                status: 400,
-                message: "Token invalid",
-            });
-        }
-    } else {
-        next({
-            error: true,
-            status: 400,
-            message: "All fileds are required",
-        });
-    }
-};
-
-// method : get
-// URL: api/auth/logout
-// access : public
-exports.logout = (req, res, next) => {
-    try {
-        res.clearCookie("accessToken").send("log out succefully");
-    } catch (err) {
-        next({
-            error: true,
-            status: 400,
-            message: err.message,
-        });
-    }
-};
-
-// method : get
-// URL: api/auth/getRoles
-// access : public
-exports.getRoles = async (req, res, next) => {
-    try {
-        const role = await Role.find({ role: { $nin: ["manager"] } });
-        res.send({ role });
-    } catch (err) {
-        next({
-            error: true,
-            status: 400,
-            message: err,
-        });
-    }
-};
+module.exports = { register, login }

@@ -1,25 +1,30 @@
 const Destination = require("../models/Destination")
-const Review = require("../models/Review")
-const User = require("../models/User")
-const { validationResult } = require("express-validator")
 
-// create a destination
-const createDestination = async (req, res, next) => {
-    // check for validation errors
-    const errors = validationResult(req)
-    if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() })
+/**
+ * @route   POST api/destinations
+ * @desc    create a destination
+ * @access  private
+ */
+const createDestination = async (req, res) => {
+    // check for the body and file
+    if (!req.body || !req.file) {
+        return res.status(400).json({
+            message: "Please fill all the fields",
+        })
     }
 
     // destructure the request body
-    const { name, description, image, price, location, climate } = req.body
+    const { name, description, price, location, climate } = req.body
 
     try {
         // create a new destination
         const newDestination = new Destination({
             name,
             description,
-            image,
+            image: {
+                data: req.file.buffer,
+                contentType: req.file.mimetype,
+            },
             price,
             location,
             climate,
@@ -29,7 +34,10 @@ const createDestination = async (req, res, next) => {
         const destination = await newDestination.save()
 
         // send the destination as a response
-        res.json(destination)
+        res.json(200, {
+            message: "Destination created successfully",
+            destination,
+        })
     } catch (err) {
         console.error(err.message)
         res.status(500).send("Server Error")
@@ -37,7 +45,7 @@ const createDestination = async (req, res, next) => {
 }
 
 // get all destinations
-const getAllDestinations = async (req, res, next) => {
+const getAllDestinations = async (req, res) => {
     try {
         // find all destinations
         const destinations = await Destination.find()
@@ -51,18 +59,15 @@ const getAllDestinations = async (req, res, next) => {
 }
 
 // get a destination
-const getDestination = async (req, res, next) => {
+const getDestination = async (req, res) => {
     try {
-        // find the destination by id
-        const destination = await Destination.findById(req.params.id)
-
-        // if the destination is not found
-        if (!destination) {
-            return res.status(404).json({ msg: "Destination not found" })
-        }
-
+        // get the destination
+        const destination = req.destination
         // send the destination as a response
-        res.json(destination)
+        res.json(200, {
+            message: "Destination fetched successfully",
+            destination,
+        })
     } catch (err) {
         console.error(err.message)
 
@@ -76,68 +81,56 @@ const getDestination = async (req, res, next) => {
 }
 
 // update a destination
-const updateDestination = async (req, res, next) => {
-    // check for validation errors
-    const errors = validationResult(req)
-    if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() })
+const updateDestination = async (req, res) => {
+    // check for the body and file
+    if (!req.body || !req.file) {
+        return res.status(400).json({
+            message: "Please fill all the fields",
+        })
     }
 
     // destructure the request body
-    const { name, description, image, price, location, climate } = req.body
-
-    // build a destination object
-    const destinationFields = {}
-    if (name) destinationFields.name = name
-    if (description) destinationFields.description = description
-    if (image) destinationFields.image = image
-    if (price) destinationFields.price = price
-    if (location) destinationFields.location = location
-    if (climate) destinationFields.climate = climate
+    const { name, description, price, location, climate } = req.body
 
     try {
-        // find the destination by id
-        let destination = await Destination.findById(req.params.id)
-
-        // if the destination is not found
-        if (!destination) {
-            return res.status(404).json({ msg: "Destination not found" })
-        }
-
         // update the destination
-        destination = await Destination.findByIdAndUpdate(
-            req.params.id,
-            { $set: destinationFields },
+        let destination = await Destination.updateOne(
+            {
+                _id: req.destination._id,
+            },
+            {
+                $set: {
+                    name,
+                    description,
+                    image: {
+                        data: req.file.buffer,
+                        contentType: req.file.mimetype,
+                    },
+                    price,
+                    location,
+                    climate,
+                },
+            },
             { new: true }
         )
 
         // send the updated destination as a response
-        res.json(destination)
+        res.json(200, {
+            message: "Destination updated successfully",
+            destination,
+        })
     } catch (err) {
         console.error(err.message)
-
-        // if the id is not valid
-        if (err.kind === "ObjectId") {
-            return res.status(404).json({ msg: "Destination not found" })
-        }
 
         res.status(500).send("Server Error")
     }
 }
 
 // delete a destination
-const deleteDestination = async (req, res, next) => {
+const deleteDestination = async (req, res) => {
     try {
-        // find the destination by id
-        const destination = await Destination.findById(req.params.id)
-
-        // if the destination is not found
-        if (!destination) {
-            return res.status(404).json({ msg: "Destination not found" })
-        }
-
         // delete the destination
-        await Destination.findByIdAndRemove(req.params.id)
+        await Destination.deleteOne({ _id: req.destination._id })
 
         // send a success message as a response
         res.json({ msg: "Destination removed" })

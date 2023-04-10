@@ -4,11 +4,14 @@ const {
     createProgram,
     updateProgram,
     deleteProgram,
-    getPrograms,
     getProgram,
 } = require("../controllers/programController")
 
-router.route("/").get(getPrograms).post(createProgram)
+const authChecker = require("../middlewares/authChecker")
+const roleChecker = require("../middlewares/roleChecker")
+const upload = require("../middlewares/uploadImage")
+
+router.route("/").post(createProgram)
 
 router.route("/:id").get(getProgram).put(updateProgram).delete(deleteProgram)
 
