@@ -1,5 +1,5 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom"
-import { Home, Destinations } from "./pages"
+import { Home, Destinations, Login } from "./pages"
 import { NotFound } from "./components"
 
 const Router = (): JSX.Element => {
@@ -8,6 +8,7 @@ const Router = (): JSX.Element => {
             <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/destinations" element={<Destinations />} />
+                <Route path="/login" element={<Login />} />
                 <Route path="*" element={<NotFound />} />
             </Routes>
         </BrowserRouter>
