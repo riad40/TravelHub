@@ -9,5 +9,7 @@ import GeneralDetails from "./destinations/GeneralDetails"
 import Itenary from "./destinations/Itenary"
 import Galleries from "./destinations/Galleries"
 import Booking from "./destinations/Booking"
+import UpdateInfos from "./profile/UpdateInfos"
+import Bookings from "./profile/Bookings"
 
-export { NavBar, Footer, Hero, DestinationCard, NotFound, FormContainer, Input, GeneralDetails, Itenary, Galleries, Booking }
+export { NavBar, Footer, Hero, DestinationCard, NotFound, FormContainer, Input, GeneralDetails, Itenary, Galleries, Booking, UpdateInfos, Bookings }
