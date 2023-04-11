@@ -11,5 +11,8 @@ import Galleries from "./destinations/Galleries"
 import Booking from "./destinations/Booking"
 import UpdateInfos from "./profile/UpdateInfos"
 import Bookings from "./profile/Bookings"
+import Header from "./admin/Header"
+import Sidebar from "./admin/Sidebar"
+import Wrapper from "./admin/Wrapper"
 
-export { NavBar, Footer, Hero, DestinationCard, NotFound, FormContainer, Input, GeneralDetails, Itenary, Galleries, Booking, UpdateInfos, Bookings }
+export { NavBar, Footer, Hero, DestinationCard, NotFound, FormContainer, Input, GeneralDetails, Itenary, Galleries, Booking, UpdateInfos, Bookings, Header, Sidebar, Wrapper }

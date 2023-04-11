@@ -1,6 +1,6 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom"
-import { Home, Destinations, Login, Register, DestinationDetails, Profile } from "./pages"
-import { NotFound } from "./components"
+import { Home, Destinations, Login, Register, DestinationDetails, Profile, Dashboard } from "./pages"
+import { NotFound, Wrapper } from "./components"
 
 const Router = (): JSX.Element => {
     return (
@@ -12,6 +12,9 @@ const Router = (): JSX.Element => {
                 <Route path="/register" element={<Register />} />
                 <Route path="/destinations/:id" element={<DestinationDetails />} />
                 <Route path="/profile" element={<Profile />} />
+                <Route element={<Wrapper />}>
+                    <Route path="/admin" element={<Dashboard />} />
+                </Route>
                 <Route path="*" element={<NotFound />} />
             </Routes>
         </BrowserRouter>
