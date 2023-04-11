@@ -9,7 +9,7 @@ const validate = (method) => {
                 check(
                     "password",
                     "please enter a password with 6 or more characters"
-                ).isLength({ min: 6 }),
+                ),
             ]
         }
         case "login": {
