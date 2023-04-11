@@ -14,5 +14,6 @@ import Bookings from "./profile/Bookings"
 import Header from "./admin/Header"
 import Sidebar from "./admin/Sidebar"
 import Wrapper from "./admin/Wrapper"
+import Alert from "./forms/Alert"
 
-export { NavBar, Footer, Hero, DestinationCard, NotFound, FormContainer, Input, GeneralDetails, Itenary, Galleries, Booking, UpdateInfos, Bookings, Header, Sidebar, Wrapper }
+export { NavBar, Footer, Hero, DestinationCard, NotFound, FormContainer, Input, GeneralDetails, Itenary, Galleries, Booking, UpdateInfos, Bookings, Header, Sidebar, Wrapper, Alert }
