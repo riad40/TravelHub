@@ -1,7 +1,7 @@
 import { Destination } from "../../@types"
 import { Input } from "../../components"
 
-const Booking = ({ destination }: { destination: Destination }) => {
+const Booking = () => {
     return (
         <>
             <div className="border-t border-2 border-gray-900 w-2/4 mx-auto font-bold rounded-lg mt-7 mb-2"></div>

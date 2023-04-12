@@ -1,7 +1,6 @@
 import { NavBar, Footer } from "../../components"
 import { useState, useRef } from "react"
 import { GeneralDetails, Itenary, Galleries, Booking } from "../../components"
-import { Destination } from "../../@types"
 
 const DestinationDetails = () => {
     const [activeTab, setActiveTab] = useState("general")
@@ -39,19 +38,19 @@ const DestinationDetails = () => {
             </div>
 
             <div ref={generalRef} className={activeTab === "general" ? "block w-3/4 mx-auto" : "hidden"}>
-                <GeneralDetails destination={{} as Destination} />
+                <GeneralDetails />
             </div>
 
             <div ref={itenaryRef} className={activeTab === "itenary" ? "block w-3/4 mx-auto" : "hidden"}>
-                <Itenary destination={{} as Destination} />
+                <Itenary />
             </div>
 
             <div ref={galleryRef} className={activeTab === "gallery" ? "block w-3/4 mx-auto" : "hidden"}>
-                <Galleries destination={{} as Destination} />
+                <Galleries />
             </div>
 
             <div ref={bookNowRef} className={activeTab === "bookNow" ? "block w-3/4 mx-auto" : "hidden"}>
-                <Booking destination={{} as Destination} />
+                <Booking />
             </div>
 
             <Footer />
