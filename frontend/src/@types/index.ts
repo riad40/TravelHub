@@ -2,10 +2,10 @@ import { setAuth } from "../state/actions"
 import rootReducer from "../state/reducers"
 
 export type Destination = {
-    id: number
+    _id: number
     name: string
     description: string
-    image: string
+    image: Image
     price: number
 }
 
@@ -13,6 +13,15 @@ export type Destination = {
 export type Auth = {
     user: User
     token: string
+}
+
+// make image type
+export type Image = {
+    contentType: string
+    data: {
+        data: number[]
+        type: string
+    }
 }
 
 // make user type

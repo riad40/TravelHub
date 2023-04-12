@@ -16,5 +16,6 @@ import Sidebar from "./admin/Sidebar"
 import Wrapper from "./admin/Wrapper"
 import Alert from "./forms/Alert"
 import RequireAuth from "./auth/RequireAuth"
+import Loading from "./common/Loading"
 
-export { NavBar, Footer, Hero, DestinationCard, NotFound, FormContainer, Input, GeneralDetails, Itenary, Galleries, Booking, UpdateInfos, Bookings, Header, Sidebar, Wrapper, Alert, RequireAuth }
+export { NavBar, Footer, Hero, DestinationCard, NotFound, FormContainer, Input, GeneralDetails, Itenary, Galleries, Booking, UpdateInfos, Bookings, Header, Sidebar, Wrapper, Alert, RequireAuth, Loading }
