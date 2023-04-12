@@ -2,7 +2,7 @@ import { setAuth } from "../state/actions"
 import rootReducer from "../state/reducers"
 
 export type Destination = {
-    _id: number
+    _id: string
     name: string
     description: string
     location: string
@@ -27,7 +27,7 @@ export type Image = {
 
 // make user type
 export type User = {
-    _id?: number
+    id: string
     username: string
     email: string
     roles: string[]
@@ -67,4 +67,15 @@ export type Itinerary = {
     destination: Destination
     dayRange: number
     image: Image
+}
+
+// make booking type
+export type BookingData = {
+    destination: string
+    user: string
+    passangers: {
+        fullName: string
+        email: string
+        phone: string
+    }[]
 }

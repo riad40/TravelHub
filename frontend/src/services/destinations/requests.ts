@@ -1,4 +1,5 @@
 import api from "../../configs/api"
+import { BookingData } from "../../@types"
 
 // get destinations
 const getDestinations = async (token: string) => {
@@ -75,4 +76,49 @@ const getDestinationItenary = async (token: string, id: string) => {
     }
 }
 
-export { getDestinations, getDestinationDetails, getDestinationReviews, getDestinationItenary, getDestination }
+// make booking for a destination
+const makeBooking = async (token: string, data: BookingData) => {
+    try {
+        const response = await api.post("/bookings", data, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        })
+
+        return response?.data
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+// get bookings by user
+const getBookingsByUser = async (token: string, userId: string) => {
+    try {
+        const { data } = await api.get(`/bookings/user/${userId}`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        })
+
+        return data
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+// make cancel booking
+const cancelBooking = async (token: string, bookingId: string) => {
+    try {
+        const { data } = await api.delete(`/bookings/${bookingId}`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        })
+
+        return data
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+export { getDestinations, getDestinationDetails, getDestinationReviews, getDestinationItenary, getDestination, makeBooking, getBookingsByUser, cancelBooking }

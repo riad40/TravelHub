@@ -1,8 +1,12 @@
-import { NavBar, Footer, UpdateInfos, Bookings } from "../../components"
-import { useState, useRef } from "react"
+import { NavBar, Footer, UpdateInfos, Bookings, Loading } from "../../components"
+import { useState, useRef, useEffect } from "react"
+import useAuth from "../../hooks/useAuth"
+import { getBookingsByUser } from "../../services/destinations/requests"
 
 const Profile = (): JSX.Element => {
     const [activeTab, setActiveTab] = useState("updateInfos")
+    const [loading, setLoading] = useState(true)
+    const [bookings, setBookings] = useState([])
 
     const updateInfosRef = useRef<HTMLDivElement>(null)
     const bookingsRef = useRef<HTMLDivElement>(null)
@@ -17,6 +21,24 @@ const Profile = (): JSX.Element => {
             bookingsRef.current?.classList.remove("hidden")
         }
     }
+
+    const { auth } = useAuth()
+
+    useEffect(() => {
+        const getBookings = async () => {
+            const response = await getBookingsByUser(auth.token, auth.user.id)
+            setBookings(response.data)
+            setLoading(false)
+        }
+
+        getBookings()
+
+        return () => {
+            setBookings([])
+        }
+    }, [auth.token, auth.user.id])
+
+    if (loading) return <Loading />
 
     return (
         <>
@@ -36,7 +58,7 @@ const Profile = (): JSX.Element => {
             </div>
 
             <div className="hidden" ref={bookingsRef}>
-                <Bookings />
+                <Bookings bookings={bookings} />
             </div>
 
             <Footer />

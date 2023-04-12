@@ -1,9 +1,15 @@
-import { NavBar, Footer } from "../../components"
-import { useState, useRef } from "react"
+import { NavBar, Footer, Loading } from "../../components"
+import { useState, useRef, useEffect } from "react"
 import { GeneralDetails, Itenary, Galleries, Booking } from "../../components"
+import { Destination } from "../../@types"
+import useAuth from "../../hooks/useAuth"
+import { getDestination } from "../../services/destinations/requests"
+import { useParams } from "react-router-dom"
 
 const DestinationDetails = () => {
     const [activeTab, setActiveTab] = useState("general")
+    const [destination, setDestination] = useState<Destination>()
+    const [loading, setLoading] = useState(true)
 
     const generalRef = useRef<HTMLDivElement>(null)
 
@@ -16,6 +22,26 @@ const DestinationDetails = () => {
     const handleTabChange = (tab: string) => {
         setActiveTab(tab)
     }
+
+    const { id } = useParams<{ id: string }>()
+
+    const { auth } = useAuth()
+
+    useEffect(() => {
+        const getDestinationDetails = async () => {
+            const response = await getDestination(auth.token, id as string)
+            setDestination(response)
+            setLoading(false)
+        }
+
+        getDestinationDetails()
+
+        return () => {
+            setDestination(undefined)
+        }
+    }, [id, auth.token])
+
+    if (loading) return <Loading />
 
     return (
         <>
@@ -50,7 +76,7 @@ const DestinationDetails = () => {
             </div>
 
             <div ref={bookNowRef} className={activeTab === "bookNow" ? "block w-3/4 mx-auto" : "hidden"}>
-                <Booking />
+                <Booking destination={destination as Destination} />
             </div>
 
             <Footer />
