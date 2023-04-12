@@ -14,14 +14,14 @@ const createBooking = async (req, res) => {
         return res.status(400).json({ errors: errors.array() })
     }
 
-    const { destination, travelAgent, paymentId, status, user } = req.body
+    const { destination, paymentId, status, user, passangers } = req.body
 
     try {
         // create booking
         const booking = new Booking({
             user,
             destination,
-            travelAgent,
+            passangers,
             paymentId,
             status,
         })
@@ -52,8 +52,8 @@ const getBookings = async (req, res) => {
     try {
         // get bookings
         const bookings = await Booking.find()
-            .populate("user", "name")
-            .populate("destination", "name")
+            .populate("user", "username")
+            .populate("destination")
 
         // send response to client
         res.status(200).json({
@@ -134,11 +134,14 @@ const updateBookingStatus = async (req, res) => {
 
 const cancelBooking = async (req, res) => {
     try {
-        // get booking
-        const booking = req.booking
-
         // delete booking
-        await booking.remove()
+        const deletedBooking = await Booking.findByIdAndDelete(req.params.id)
+
+        if (!deletedBooking) {
+            return res.status(400).json({
+                error: "Booking not found",
+            })
+        }
 
         // send response to client
         res.status(200).json({
@@ -164,8 +167,7 @@ const getBookingsByUser = async (req, res) => {
     try {
         // get bookings
         const bookings = await Booking.find({ user: req.params.id }).populate(
-            "destination",
-            "name"
+            "destination"
         )
 
         // send response to client
@@ -193,7 +195,7 @@ const getBookingsByDestination = async (req, res) => {
         // get bookings
         const bookings = await Booking.find({
             destination: req.params.id,
-        }).populate("user", "name")
+        }).populate("user")
 
         // send response to client
         res.status(200).json({

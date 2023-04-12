@@ -14,7 +14,7 @@ const validate = require("../middlewares/bodyValidator")
 const authChecker = require("../middlewares/authChecker")
 const roleChecker = require("../middlewares/roleChecker")
 
-// @route   POST api/bookings
+// @route  POST api/bookings
 router
     .route("/")
     .post(
