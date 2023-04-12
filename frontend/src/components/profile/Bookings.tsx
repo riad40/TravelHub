@@ -1,6 +1,7 @@
 import useAuth from "../../hooks/useAuth"
 import { cancelBooking } from "../../services/destinations/requests"
 import { useState } from "react"
+import { Link } from "react-router-dom"
 
 const Bookings = ({ bookings }: { bookings: any }): JSX.Element => {
     const [bookingsList, setBookingsList] = useState(bookings)
@@ -8,10 +9,16 @@ const Bookings = ({ bookings }: { bookings: any }): JSX.Element => {
     const { auth } = useAuth()
 
     const handleCancelBooking = async (id: string) => {
+        const confirm = window.confirm("Are you sure you want to cancel this booking?")
+
+        if (!confirm) return
+
         await cancelBooking(auth.token, id)
         const updatedBookings = bookingsList.filter((booking: any) => booking._id !== id)
         setBookingsList(updatedBookings)
     }
+
+    console.log(bookingsList)
 
     return (
         <div className="w-2/4 mx-auto my-20 rounded p-4">
@@ -39,9 +46,9 @@ const Bookings = ({ bookings }: { bookings: any }): JSX.Element => {
                                         Cancel
                                     </button>
 
-                                    <button className="bg-green-600 hover:bg-green-700 text-white py-1 px-4 rounded focus:outline-none focus:shadow-outline" type="button">
+                                    <Link to={`/destinations/${booking.destination._id}/review`} className="bg-green-600 hover:bg-green-700 text-white py-1 px-4 rounded focus:outline-none focus:shadow-outline" type="button">
                                         Review
-                                    </button>
+                                    </Link>
                                 </td>
                             </tr>
                         ))}

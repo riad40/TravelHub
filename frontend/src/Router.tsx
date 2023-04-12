@@ -1,5 +1,5 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom"
-import { Home, Destinations, Login, Register, DestinationDetails, Profile, Dashboard } from "./pages"
+import { Home, Destinations, Login, Register, DestinationDetails, Profile, Dashboard, CreateReview } from "./pages"
 import { NotFound, Wrapper, RequireAuth } from "./components"
 
 const Router = (): JSX.Element => {
@@ -13,6 +13,7 @@ const Router = (): JSX.Element => {
                 <Route path="/destinations/:id" element={<DestinationDetails />} />
                 <Route element={<RequireAuth roles={["customer"]} />}>
                     <Route path="/profile" element={<Profile />} />
+                    <Route path="/destinations/:id/review" element={<CreateReview />} />
                 </Route>
                 <Route element={<Wrapper />}>
                     <Route path="/admin" element={<Dashboard />} />

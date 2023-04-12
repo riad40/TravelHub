@@ -5,5 +5,6 @@ import Register from "./Register"
 import DestinationDetails from "./client/DestinationDetails"
 import Profile from "./client/Profile"
 import Dashboard from "./admin/Dashboard"
+import CreateReview from "./client/CreateReview"
 
-export { Home, Destinations, Login, Register, DestinationDetails, Profile, Dashboard }
+export { Home, Destinations, Login, Register, DestinationDetails, Profile, Dashboard, CreateReview }

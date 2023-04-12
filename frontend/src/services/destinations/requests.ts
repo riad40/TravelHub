@@ -1,6 +1,6 @@
 import api from "../../configs/api"
 import { BookingData } from "../../@types"
-
+import { ReviewData } from "../../@types"
 // get destinations
 const getDestinations = async (token: string) => {
     try {
@@ -121,4 +121,19 @@ const cancelBooking = async (token: string, bookingId: string) => {
     }
 }
 
-export { getDestinations, getDestinationDetails, getDestinationReviews, getDestinationItenary, getDestination, makeBooking, getBookingsByUser, cancelBooking }
+// create reviews
+const createReview = async (token: string, data: ReviewData) => {
+    try {
+        const response = await api.post("/reviews", data, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        })
+
+        return response?.data
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+export { getDestinations, getDestinationDetails, getDestinationReviews, getDestinationItenary, getDestination, makeBooking, getBookingsByUser, cancelBooking, createReview }

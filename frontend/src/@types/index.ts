@@ -53,7 +53,7 @@ export type DestinationDetails = {
 
 // make review type
 export type Review = {
-    _id: string
+    _id?: string
     comment: string
     rating: number
     user: User
@@ -78,4 +78,12 @@ export type BookingData = {
         email: string
         phone: string
     }[]
+}
+
+// review form type
+export type ReviewData = {
+    comment: string
+    rating: number
+    destination?: string
+    user: string
 }

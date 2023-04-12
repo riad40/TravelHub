@@ -1,7 +1,7 @@
 import { Loading } from "../../components"
 import { useState, useEffect } from "react"
 import { getDestinationDetails, getDestinationReviews, getDestination } from "../../services/destinations/requests"
-import { DestinationDetails, Review, Destination } from "../../@types"
+import { DestinationDetails, Review, Destination, User } from "../../@types"
 import useAuth from "../../hooks/useAuth"
 import { useParams } from "react-router-dom"
 
