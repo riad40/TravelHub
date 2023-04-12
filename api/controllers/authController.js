@@ -3,6 +3,7 @@ const Role = require("../models/Role")
 const bcrypt = require("bcryptjs")
 const jwt = require("jsonwebtoken")
 const { validationResult } = require("express-validator")
+const sendEmail = require("../helpers/sendEmail")
 
 /**
  * @desc    register a user
@@ -44,6 +45,11 @@ const register = async (req, res) => {
         })
         await user.save()
 
+        const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
+            expiresIn: "1h",
+        })
+        sendEmail(user.email, token, "verify", "Verify Your Email ")
+
         // send the response
         res.status(201).json({ message: "user created successfully" })
     } catch (error) {
@@ -79,6 +85,11 @@ const login = async (req, res) => {
         // get the user roles
         const roles = await Role.find({ _id: { $in: userExist.role } })
 
+        // check if the user is verified
+        if (!userExist.isVerified) {
+            return res.status(400).json({ message: "please verify your email" })
+        }
+
         // check if the password is correct
         const isPasswordCorrect = await bcrypt.compare(
             password,
@@ -113,4 +124,24 @@ const login = async (req, res) => {
     }
 }
 
-module.exports = { register, login }
+const verifyEmail = (req, res) => {
+    try {
+        const token = req.params.token
+
+        console.log(token)
+
+        const userData = jwt.verify(token, process.env.JWT_SECRET)
+
+        User.updateOne({ _id: userData._id }, { $set: { isVerified: true } })
+            .then(() => {
+                res.send("Email verified successfully")
+            })
+            .catch((err) => {
+                console.log(err) && res.send("something went wrong " + err)
+            })
+    } catch (err) {
+        console.log(err) && res.send("something went wrong " + err)
+    }
+}
+
+module.exports = { register, login, verifyEmail }
