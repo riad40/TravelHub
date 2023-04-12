@@ -1,6 +1,6 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom"
 import { Home, Destinations, Login, Register, DestinationDetails, Profile, Dashboard, CreateReview } from "./pages"
-import { NotFound, Wrapper, RequireAuth } from "./components"
+import { NotFound, Wrapper, RequireAuth, Verify } from "./components"
 
 const Router = (): JSX.Element => {
     return (
@@ -10,6 +10,7 @@ const Router = (): JSX.Element => {
                 <Route path="/destinations" element={<Destinations />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
+                <Route path="/verify/:token" element={<Verify />} />
                 <Route path="/destinations/:id" element={<DestinationDetails />} />
                 <Route element={<RequireAuth roles={["customer"]} />}>
                     <Route path="/profile" element={<Profile />} />

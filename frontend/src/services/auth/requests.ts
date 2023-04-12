@@ -29,4 +29,14 @@ const register = async (username: string, email: string, password: string) => {
     }
 }
 
-export { login, register }
+// verify email
+const verifyEmail = async (token: string) => {
+    try {
+        const response = await api.get(`/auth/verify/${token}`)
+        return response?.data
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+export { login, register, verifyEmail }

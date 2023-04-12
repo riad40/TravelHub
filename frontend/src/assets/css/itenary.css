@@ -201,7 +201,7 @@ nav li {
     .container::before {
         content: "";
         position: absolute;
-        height: 1314px;
+        height: 700px;
         width: 2px;
         top: 300px;
         left: 50%;

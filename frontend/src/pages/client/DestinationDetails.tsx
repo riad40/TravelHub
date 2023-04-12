@@ -46,7 +46,6 @@ const DestinationDetails = () => {
     return (
         <>
             <NavBar activeTab="destinations" />
-
             <div className="w-3/4 mx-auto flex justify-between items-center mt-10 mb-5">
                 <button className={activeTab === "general" ? "bg-blue-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded" : "bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded"} onClick={() => handleTabChange("general")}>
                     General Details
