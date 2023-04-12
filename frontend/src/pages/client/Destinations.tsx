@@ -10,13 +10,12 @@ const Destinations = (): JSX.Element => {
 
     const { auth } = useAuth()
 
+    const fetchDestinations = async () => {
+        const destinations = await getDestinations(auth.token)
+        setDestinations(destinations)
+        setLoading(false)
+    }
     useEffect(() => {
-        const fetchDestinations = async () => {
-            const destinations = await getDestinations(auth.token)
-            setDestinations(destinations)
-            setLoading(false)
-        }
-
         fetchDestinations()
 
         return () => {
@@ -24,47 +23,26 @@ const Destinations = (): JSX.Element => {
         }
     }, [])
 
+    const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { value } = e.target
+        const filteredDestinations = destinations.filter((destination) => destination.name.toLowerCase().includes(value.toLowerCase()))
+        setDestinations(filteredDestinations)
+
+        if (value.length === 0) {
+            fetchDestinations()
+        }
+    }
+
     if (loading) return <Loading />
 
     return (
         <>
             <NavBar activeTab="destinations" />
 
-            <div className="w-3/4 mx-auto flex justify-between items-center mt-10 mb-5">
-                <div className="flex flex-col mt-4 w-1/4 px-4">
+            <div className="w-3/4 mx-auto flex justify-center items-center mt-10 mb-5">
+                <div className="flex flex-col mt-4 w-full px-4">
                     <div className="flex flex-col mt-2">
-                        <input type="text" name="search" id="search" placeholder="Search by title" className="w-full border-2 border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:border-gray-400" />
-                    </div>
-                </div>
-                <div className="flex flex-col mt-4 w-1/4 px-4">
-                    <div className="flex flex-col">
-                        <div className="flex justify-between">
-                            <span className="text-gray-500">0</span>
-                            <h1 className="text-center text-gray-500">Filter By Price</h1>
-                            <span className="text-gray-500">1000</span>
-                        </div>
-                        <input type="range" name="price" id="price" className="w-full" />
-                    </div>
-                </div>
-                <div className="flex flex-col mt-4 w-1/4 px-4">
-                    <h1 className="text-center text-gray-500">Filter by Location</h1>
-                    <div className="flex flex-col mt-2">
-                        <select name="countries" id="countries" className="w-full border-2 border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:border-gray-400">
-                            <option value="all">All</option>
-                            <option value="usa">USA</option>
-                            <option value="canada">Canada</option>
-                            <option value="mexico">Mexico</option>
-                        </select>
-                    </div>
-                </div>
-                <div className="flex flex-col mt-4 w-1/4 px-4">
-                    <h1 className="text-center text-gray-500">Filter By Climate</h1>
-                    <div className="flex flex-col mt-2">
-                        <select name="countries" id="countries" className="w-full border-2 border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:border-gray-400">
-                            <option value="usa">Rainy</option>
-                            <option value="canada">Sunny</option>
-                            <option value="mexico">Snowy</option>
-                        </select>
+                        <input type="text" name="search" id="search" placeholder="Search by title" className="w-full border-2 border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:border-gray-400" onChange={handleFilterChange} />
                     </div>
                 </div>
             </div>
