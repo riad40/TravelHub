@@ -14,15 +14,12 @@ const DestinationSchema = new mongoose.Schema({
         ref: "Destination",
         required: true,
     },
-    program: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Program",
-        required: true,
-    },
-    images: {
-        type: [String],
-        required: true,
-    },
+    images: [
+        {
+            data: Buffer,
+            contentType: String,
+        },
+    ],
     starting_point: {
         type: String,
         required: true,

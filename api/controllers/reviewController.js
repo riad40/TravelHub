@@ -8,11 +8,10 @@ const createReview = async (req, res) => {
         return res.status(400).json({ errors: errors.array() })
     }
 
-    const { name, rating, comment, destination, user } = req.body
+    const { rating, comment, destination, user } = req.body
 
     try {
         const newReview = new Review({
-            name,
             rating,
             comment,
             destination,

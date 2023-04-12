@@ -20,7 +20,6 @@ const validate = (method) => {
         }
         case "createReview": {
             return [
-                check("name", "name is required").not().isEmpty(),
                 check("rating", "rating is required").not().isEmpty(),
                 check("comment", "comment is required").not().isEmpty(),
                 check("destination", "destination is required").not().isEmpty(),

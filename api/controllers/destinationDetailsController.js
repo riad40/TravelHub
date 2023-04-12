@@ -3,23 +3,15 @@ const DestinationDetails = require("../models/DestinationDetails")
 // create a destination details
 const createDestinationDetails = async (req, res) => {
     // destructure the request body
-    const {
-        start_date,
-        end_date,
-        destination,
-        program,
-        starting_point,
-        inclusions,
-        exclusions,
-    } = req.body
+    const { start_date, end_date, starting_point, inclusions, exclusions } =
+        req.body
 
     try {
         // create a new destination details
         const newDestinationDetails = new DestinationDetails({
             start_date,
             end_date,
-            destination,
-            program,
+            destination: req.params.id,
             images: req.files.map((file) => ({
                 data: file.buffer,
                 contentType: file.mimetype,
@@ -40,27 +32,15 @@ const createDestinationDetails = async (req, res) => {
     }
 }
 
-// get all destination details
-const getAllDestinationDetails = async (req, res) => {
-    try {
-        // find all destination details
-        const destinationDetails = await DestinationDetails.find()
-
-        // send the destination details as a response
-        res.json(destinationDetails)
-    } catch (err) {
-        console.error(err.message)
-        res.status(500).send("Server Error")
-    }
-}
-
 // get a destination details
 const getDestinationDetails = async (req, res) => {
     try {
         // find the destination details by id
-        const destinationDetails = await DestinationDetails.findById(
-            req.params.id
-        )
+        const destinationDetails = await DestinationDetails.findOne({
+            destination: req.params.id,
+        })
+
+        console.log(req.params.id)
 
         // if the destination details is not found
         if (!destinationDetails) {
@@ -80,15 +60,8 @@ const getDestinationDetails = async (req, res) => {
 // update a destination details
 const updateDestinationDetails = async (req, res) => {
     // destructure the request body
-    const {
-        start_date,
-        end_date,
-        destination,
-        program,
-        starting_point,
-        inclusions,
-        exclusions,
-    } = req.body
+    const { start_date, end_date, starting_point, inclusions, exclusions } =
+        req.body
 
     try {
         // find the destination details by id
@@ -112,8 +85,7 @@ const updateDestinationDetails = async (req, res) => {
                 $set: {
                     start_date,
                     end_date,
-                    destination,
-                    program,
+                    destination: req.params.id,
                     images: req.files.map((file) => ({
                         data: file.buffer,
                         contentType: file.mimetype,
@@ -134,36 +106,8 @@ const updateDestinationDetails = async (req, res) => {
     }
 }
 
-// delete a destination details
-const deleteDestinationDetails = async (req, res) => {
-    try {
-        // find the destination details by id
-        let destinationDetails = await DestinationDetails.findById(
-            req.params.id
-        )
-
-        // if the destination details is not found
-        if (!destinationDetails) {
-            return res
-                .status(404)
-                .json({ msg: "Destination Details not found" })
-        }
-
-        // delete the destination details
-        await DestinationDetails.findByIdAndRemove(req.params.id)
-
-        // send a success message as a response
-        res.json({ msg: "Destination Details deleted" })
-    } catch (err) {
-        console.error(err.message)
-        res.status(500).send("Server Error")
-    }
-}
-
 module.exports = {
     createDestinationDetails,
-    getAllDestinationDetails,
     getDestinationDetails,
     updateDestinationDetails,
-    deleteDestinationDetails,
 }

@@ -22,14 +22,14 @@ const authRouter = require("./routes/auth")
 const destinationRouter = require("./routes/destination")
 const reviewRouter = require("./routes/review")
 const destinationDetailsRouter = require("./routes/destinationDetails")
-const programRouter = require("./routes/program")
+const itineraryRouter = require("./routes/itinerary")
 const bookingRouter = require("./routes/booking")
 
 app.use("/api/auth", authRouter)
 app.use("/api/destinations", destinationRouter)
 app.use("/api/reviews", reviewRouter)
 app.use("/api/destinationDetails", destinationDetailsRouter)
-app.use("/api/programs", programRouter)
+app.use("/api/itinerary", itineraryRouter)
 app.use("/api/bookings", bookingRouter)
 
 app.listen(process.env.PORT || 5000, () => {

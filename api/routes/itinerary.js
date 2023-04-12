@@ -1,36 +1,38 @@
 const router = require("express").Router()
 
 const {
-    createDestinationDetails,
-    getDestinationDetails,
-    updateDestinationDetails,
-} = require("../controllers/destinationDetailsController")
+    createItinerary,
+    updateItinerary,
+    deleteItinerary,
+    getDestinationItineraries,
+} = require("../controllers/itinerariesController")
 
 const authChecker = require("../middlewares/authChecker")
 const roleChecker = require("../middlewares/roleChecker")
 const upload = require("../middlewares/uploadImage")
 
-// create a destination details
 router
     .route("/:id")
     .post(
         authChecker,
         roleChecker("travel_agent"),
-        upload.array("images", 5),
-        createDestinationDetails
+        upload.single("image"),
+        createItinerary
     )
 
-// get a destination details
-router.route("/:id").get(getDestinationDetails)
-
-// update a destination details
 router
     .route("/:id")
     .put(
         authChecker,
         roleChecker("travel_agent"),
-        upload.array("images", 5),
-        updateDestinationDetails
+        upload.single("image"),
+        updateItinerary
     )
+
+router
+    .route("/:id")
+    .delete(authChecker, roleChecker("travel_agent"), deleteItinerary)
+
+router.route("/:id").get(getDestinationItineraries)
 
 module.exports = router

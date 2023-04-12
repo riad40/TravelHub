@@ -1,21 +1,17 @@
 const mongoose = require("mongoose")
 
-const ProgramSchema = new mongoose.Schema({
+const ItinerarySchema = new mongoose.Schema({
     destination: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Destination",
-    },
-    name: {
-        type: String,
-        required: true,
     },
     description: {
         type: String,
         required: true,
     },
     image: {
-        type: String,
-        required: true,
+        data: Buffer,
+        contentType: String,
     },
     dayRange: {
         type: String,
@@ -23,4 +19,4 @@ const ProgramSchema = new mongoose.Schema({
     },
 })
 
-module.exports = mongoose.model("Program", ProgramSchema)
+module.exports = mongoose.model("Itinerary", ItinerarySchema)
